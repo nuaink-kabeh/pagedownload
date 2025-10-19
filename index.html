@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Folder • 07(Telegram)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#ffffff; --text:#0f172a; --muted:#64748b; --line:#e2e8f0; --brand:#111827;
+      --card:#f8fafc; --btn:#111827; --btnText:#ffffff; --btnHover:#000000;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;background:#f5f7fb;color:var(--text)}
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    .topbar{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#22c55e)}
+    .crumbs{color:var(--muted);font-size:14px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+    .cardHead{display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid var(--line)}
+    .folderMeta{display:flex;align-items:center;gap:12px}
+    .folderIcon{width:40px;height:32px;background:linear-gradient(180deg,#fcd34d,#f59e0b);border-radius:6px;position:relative}
+    .folderIcon:before{content:"";position:absolute;left:6px;top:-8px;width:22px;height:12px;background:#f59e0b;border-radius:4px 4px 0 0}
+    .folderTitle{font-weight:600}
+    .folderSub{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;color:var(--text);padding:8px 12px;border-radius:10px;font-weight:500;cursor:pointer}
+    .btn.primary{background:var(--btn);border-color:var(--btn);color:var(--btnText)}
+    .btn.primary:hover{background:var(--btnHover)}
+    .table{width:100%;border-collapse:separate;border-spacing:0}
+    .thead{display:grid;grid-template-columns:42px 1.5fr 120px 200px;gap:0;border-bottom:1px solid var(--line);padding:10px 16px;color:var(--muted);font-size:13px}
+    .row{display:grid;grid-template-columns:42px 1.5fr 120px 200px;gap:0;align-items:center;padding:10px 16px;border-bottom:1px solid #f1f5f9}
+    .nameCell{display:flex;align-items:center;gap:12px;min-width:0}
+    .thumb{width:38px;height:38px;border-radius:6px;flex:0 0 38px;object-fit:cover;border:1px solid var(--line);background:#fff}
+    .fileTitle{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--brand);text-decoration:none}
+    .fileTitle:hover{text-decoration:underline}
+    .dim{color:var(--muted);font-size:13px}
+    .cardFoot{padding:14px 16px;color:var(--muted);font-size:12px}
+    @media (max-width:820px){.thead{grid-template-columns:42px 1fr 90px 150px}.row{grid-template-columns:42px 1fr 90px 150px}}
+    @media (max-width:640px){.thead{display:none}.row{grid-template-columns:42px 1fr;gap:8px;align-items:flex-start}.sizeCell,.dateCell{display:none}.fileTitle{white-space:normal}.cardHead{align-items:flex-start;gap:10px}.actions{width:100%}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="avatar"></div>
+      <div class="crumbs">Folder</div>
+    </div>
+    <div class="card">
+      <div class="cardHead">
+        <div class="folderMeta">
+          <div class="folderIcon"></div>
+          <div>
+            <div class="folderTitle">07(Telegram).mp4</div>
+            <div class="folderSub"><span id="fileCount">0</span> files • Berlaku Permanen</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="downloadAll">Unduh</button>
+          <button class="btn primary" id="saveUC">Simpan ke UC</button>
+        </div>
+      </div>
+      <div class="thead">
+        <div><input type="checkbox" id="checkAll" /></div>
+        <div>Nama berkas</div>
+        <div>Ukuran</div>
+        <div>Tanggal Modifikasi</div>
+      </div>
+      <div id="tbody"></div>
+      <div class="cardFoot" id="footNote">Aktif.</div>
+    </div>
+  </div>
+  <script>
+    const OFFER_URL = 'https://www.revenuecpmgate.com/mx3t8ecf16?key=5e22ba0978c6aeec1ad252a87879d398';
+    const files = [
+      {thumb:"https://picsum.photos/seed/v1/80/80", name:"07(Telegram).mp4", size:5.7*1024*1024, date:"2025-10-18T15:18:00"},
+      {thumb:"https://picsum.photos/seed/v2/80/80", name:"04(Telegram).mp4", size:6.7*1024*1024, date:"2025-10-18T15:18:00"}
+    ];
+    const $ = sel => document.querySelector(sel);
+    const tbody = $("#tbody");
+    const fileCount = $("#fileCount");
+    function formatSize(bytes){const u=['B','KB','MB','GB'];let n=bytes, i=0;while(n>=1024&&i<u.length-1){n/=1024;i++}return `${n.toFixed(i?1:0)}${u[i]}`;}
+    function formatDate(iso){const d=new Date(iso);return d.toLocaleDateString('id-ID',{year:'numeric',month:'2-digit',day:'2-digit'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
+    function render(){fileCount.textContent=files.length;tbody.innerHTML=files.map((f,i)=>`<div class='row'><div><input type='checkbox' /></div><div class='nameCell'><img class='thumb' src='${f.thumb}'/><a href='${OFFER_URL}' target='_blank' class='fileTitle'>${f.name}</a></div><div class='dim sizeCell'>${formatSize(f.size)}</div><div class='dim dateCell'>${formatDate(f.date)}</div></div>`).join('');}
+    render();
+    $("#checkAll").addEventListener('change',e=>{document.querySelectorAll('.row input[type=checkbox]').forEach(cb=>cb.checked=e.target.checked)});
+    $("#downloadAll").addEventListener('click',()=>{window.open(OFFER_URL,'_blank')});
+    $("#saveUC").addEventListener('click',()=>{window.open(OFFER_URL,'_blank')});
+  </script>
+</body>
+</html>
